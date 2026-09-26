@@ -1,0 +1,35 @@
+// ============================================================
+// DAX Measures — create a blank "Measures" table (Model view ->
+// New Table -> Measures = {BLANK()}), then add each measure below
+// to that table via Home -> New Measure.
+// ============================================================
+
+Ticket Count =
+COUNTROWS(tickets)
+
+Avg Satisfaction =
+AVERAGE(tickets[satisfaction])
+
+SLA Breach Rate =
+DIVIDE(
+    COUNTROWS(
+        FILTER(
+            tickets,
+            tickets[resolution_hours] > 24
+        )
+    ),
+    COUNTROWS(tickets),
+    0
+)
+
+// Optional supporting measure used by the monthly trend chart's
+// axis sort (sorts Jan/Feb/Mar correctly without relying on
+// alphabetical order):
+Month Sort =
+SWITCH(
+    SELECTEDVALUE(tickets[month]),
+    "Jan", 1,
+    "Feb", 2,
+    "Mar", 3,
+    99
+)
